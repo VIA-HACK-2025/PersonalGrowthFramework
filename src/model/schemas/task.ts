@@ -1,21 +1,22 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { Schema, Types } from 'mongoose';
 
 const TaskSchema: Schema = new Schema({
     parentId: {
-        type: Number,
+        type: Types.ObjectId,
+        ref: "Node",
         required: true,
     },
     value: {
         type: String,
-        required: true,
+        default: "",
     },
     status: {
         type: String,
-        enum: ['completed', 'not-completed'],
-        required: true,
+        enum: ["completed", "not-completed"],
+        default: "not-completed",
     },
 });
 
 const TaskModel = mongoose.model('Task', TaskSchema);
 
-export { TaskModel, TaskSchema }
+export { TaskModel }
