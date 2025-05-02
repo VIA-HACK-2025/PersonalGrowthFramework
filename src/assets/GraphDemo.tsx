@@ -8,6 +8,7 @@ import Graph from 'graphology';
 import { CSSProperties, FC, useCallback, useState } from 'react';
 import { FocusOnNode } from './common/FocusOnNode';
 import { useRandomGraph } from './common/useRandomGraphData';
+import { SampleGraph } from './common/SampleGraph';
 
 
 // Sigma settings
@@ -23,7 +24,12 @@ const sigmaSettings = {
   zIndex: true,
 };
 
-export const GraphDemo: FC<{ style?: CSSProperties }> = ({ style }) => {
+interface GraphDemoProps {
+  className?: string,
+  style?: CSSProperties
+}
+
+export const GraphDemo: FC<GraphDemoProps> = ({ style, className }) => {
   const data = useRandomGraph();
   const graph = Graph.from(data);
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
@@ -52,8 +58,9 @@ export const GraphDemo: FC<{ style?: CSSProperties }> = ({ style }) => {
   }, []);
 
   return (
-    <SigmaContainer settings={sigmaSettings} style={style} graph={graph}>
+    <SigmaContainer settings={sigmaSettings} style={style} graph={graph} className={className}>
       <FocusOnNode node={focusNode ?? selectedNode} move={focusNode ? false : true} />
+      <SampleGraph></SampleGraph>
       <ControlsContainer position={'bottom-right'}>
         <ZoomControl />
         <FullScreenControl />
