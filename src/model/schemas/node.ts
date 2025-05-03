@@ -1,17 +1,17 @@
-import mongoose, { Schema, Types } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 
 const NodeSchema: Schema = new Schema({
     parentId: {
-        type: Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         required: false,
     },
     children: {
-        type: [Types.ObjectId],
+        type: mongoose.Schema.Types.ObjectId,
         ref: "Node",
         default: undefined,
     },
     data: {
-        type: [Types.ObjectId],
+        type: mongoose.Schema.Types.ObjectId,
         ref: "Task",
         default: undefined,
     },

@@ -11,7 +11,7 @@ import { useGraphContext } from "../context/GraphContext";
 
 
 export const Graph: FC<{ disableHoverEffect: boolean }> = ({ disableHoverEffect }) => {
-  const { selectedNode, setSelectedNode, registerAddNode, setIsLeafNode } = useGraphContext();
+  const { selectedNode, setSelectedNode, registerAddNodeImplementation, setIsLeafNode } = useGraphContext();
   const { loadedGraph, addNode } = useGraph({
     nodeColors: {
       root: "purple",
@@ -26,12 +26,15 @@ export const Graph: FC<{ disableHoverEffect: boolean }> = ({ disableHoverEffect 
 
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
 
+
   useEffect(() => {
-    loadGraph(loadedGraph());
+    (async () => {
+      loadGraph(await loadedGraph());
+    })();
   }, [loadGraph, loadedGraph]);
 
   const memoizedRegisterEvents = useCallback(registerEvents, []);
-  const memoizedRegisterAddNode = useCallback(registerAddNode, []);
+  const memoizedRegisterAddNodeImplementation = useCallback(registerAddNodeImplementation, []);
   const memoizedAddNode = useCallback(addNode, [addNode]);
   const memoizedSetSelectedNode = useCallback(setSelectedNode, []);
   const memoizedSetIsLeafNode = useCallback(setIsLeafNode, []);
@@ -55,15 +58,16 @@ export const Graph: FC<{ disableHoverEffect: boolean }> = ({ disableHoverEffect 
       }
     });
 
-    memoizedRegisterAddNode(() => memoizedAddNode());
+    memoizedRegisterAddNodeImplementation((data) => memoizedAddNode(data));
   }, [
     memoizedRegisterEvents,
-    memoizedRegisterAddNode,
+    memoizedRegisterAddNodeImplementation,
     memoizedAddNode,
     memoizedSetSelectedNode,
     memoizedSetIsLeafNode,
     sigma,
   ]);
+
   useEffect(() => {
     setSettings({
       nodeReducer: (node, data) => {
@@ -138,6 +142,10 @@ export const Graph: FC<{ disableHoverEffect: boolean }> = ({ disableHoverEffect 
           hidden: !isIncident,
         };
       },
+    });
+
+    registerAddNodeImplementation((data) => {
+      addNode(data);
     });
   }, [hoveredNode, selectedNode, setSettings, sigma, disableHoverEffect]);
 
