@@ -15,6 +15,7 @@ import { LayoutsControl } from "./graph_utils/LayoutControls";
 import { Graph } from "./graph_utils/Graph";
 import { Task, TaskCard } from "../components/ui/TaskItem";
 import { useGraphContext } from "./context/GraphContext";
+import { XpProgress } from "../components/ui/XpProgress";
 
 interface GraphProps {
   style?: CSSProperties;
@@ -23,7 +24,6 @@ interface GraphProps {
 
 export const GraphView: FC<GraphProps> = ({ style, className }) => {
   const { isLeafNode, selectedNode } = useGraphContext();
-  const [tasks, setTasks] = useState<Task[]>([]);
   const [nodeTasks, setNodeTasks] = useState<Record<string, Task[]>>({});
   const [focusNode, setFocusNode] = useState<string | null>(null);
 
@@ -39,16 +39,16 @@ export const GraphView: FC<GraphProps> = ({ style, className }) => {
       return options.length <= 10
         ? options
         : [
-            ...options.slice(0, 10),
-            {
-              type: "message",
-              message: (
-                <span className="text-center text-muted">
-                  And {options.length - 10} others
-                </span>
-              ),
-            },
-          ];
+          ...options.slice(0, 10),
+          {
+            type: "message",
+            message: (
+              <span className="text-center text-muted">
+                And {options.length - 10} others
+              </span>
+            ),
+          },
+        ];
     },
     []
   );
@@ -75,6 +75,16 @@ export const GraphView: FC<GraphProps> = ({ style, className }) => {
           currentNode={selectedNode}
         />
       )}
+      <XpProgress
+        value={(() => {
+          const allTasks = Object.values(nodeTasks).flat();
+          const total = allTasks.length;
+          if (total === 0) return 0;
+
+          const completed = allTasks.filter(task => task.completed).length;
+          return (completed / total) * 100;
+        })()}
+        className="left-15 absolute" />
       <FocusOnNode node={focusNode ?? selectedNode} />
       <ControlsContainer position={"bottom-right"}>
         <ZoomControl />

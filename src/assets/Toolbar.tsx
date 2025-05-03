@@ -1,5 +1,4 @@
 import React from "react";
-import { FaPlus } from "react-icons/fa";
 import { useGraphContext } from "./context/GraphContext";
 import { NodeDialogCard } from "../components/ui/node-dialog-card";
 
@@ -16,10 +15,9 @@ const Toolbar: React.FC<ToolbarProps> = ({ className, onAddNode }) => {
     <div className={className}>
       <NodeDialogCard
         className={`w-12 h-12 rounded-full text-white flex items-center justify-center
-          ${
-            isDisabled
-              ? "bg-blue-500 opacity-50 cursor-not-allowed"
-              : "bg-blue-500 hover:bg-blue-600"
+          ${isDisabled
+            ? "bg-blue-500 opacity-50 cursor-not-allowed"
+            : "bg-blue-500 hover:bg-blue-600"
           }`}
         onClick={({ icon, title }) => {
           onAddNode?.({ icon, title });
