@@ -12,35 +12,43 @@ export type Task = {
 
 interface TaskCardProps extends React.HTMLAttributes<HTMLDivElement> {
   tasks: Task[];
-  setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
+  setTasks: React.Dispatch<React.SetStateAction<Record<string, Task[]>>>;
+  currentNode: string;
 }
 
-
-export function TaskCard({ tasks: tasks, setTasks, ...className }: TaskCardProps) {
-
+export function TaskCard({
+  tasks: tasks,
+  setTasks,
+  currentNode,
+  ...className
+}: TaskCardProps) {
   const addTask = () => {
     const newTask: Task = {
       id: tasks.length === 0 ? 0 : tasks[tasks.length - 1].id + 1,
       text: "",
       completed: false,
     };
-    setTasks([...tasks, newTask]);
+    setTasks((prev) => ({
+      ...prev,
+      [currentNode!]: [...(prev[currentNode!] || []), newTask],
+    }));
   };
 
-  const toggleTask = (id: number) => {
-    setTasks((prev) =>
-      prev.map((task) =>
+  const toggleTask = (groupKey: string, id: number) => {
+    setTasks((prev) => ({
+      ...prev,
+      [groupKey]: prev[groupKey].map((task) =>
         task.id === id ? { ...task, completed: !task.completed } : task
-      )
-    );
+      ),
+    }));
   };
-
-  const updateTaskText = (id: number, newText: string) => {
-    setTasks((prev) =>
-      prev.map((task) =>
+  const updateTaskText = (groupKey: string, id: number, newText: string) => {
+    setTasks((prev) => ({
+      ...prev,
+      [groupKey]: prev[groupKey].map((task) =>
         task.id === id ? { ...task, text: newText } : task
-      )
-    );
+      ),
+    }));
   };
 
   return (
@@ -53,8 +61,10 @@ export function TaskCard({ tasks: tasks, setTasks, ...className }: TaskCardProps
           <TaskItem
             key={task.id}
             task={task}
-            onToggle={() => toggleTask(task.id)}
-            onTextChange={(newText) => updateTaskText(task.id, newText)}
+            onToggle={() => toggleTask(currentNode, task.id)}
+            onTextChange={(newText) =>
+              updateTaskText(currentNode, task.id, newText)
+            }
           />
         ))}
         <Button variant="outline" onClick={addTask}>
@@ -91,6 +101,5 @@ export function TaskItem({ task, onToggle, onTextChange }: TaskItemProps) {
         />
       </CardContent>
     </Card>
-
   );
 }

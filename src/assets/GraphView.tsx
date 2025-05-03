@@ -24,7 +24,7 @@ interface GraphProps {
 
 export const GraphView: FC<GraphProps> = ({ style, className }) => {
   const { isLeafNode, selectedNode } = useGraphContext();
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const [nodeTasks, setNodeTasks] = useState<Record<string, Task[]>>({});
   const [focusNode, setFocusNode] = useState<string | null>(null);
 
   const onFocus = useCallback((value: GraphSearchOption | null) => {
@@ -61,20 +61,30 @@ export const GraphView: FC<GraphProps> = ({ style, className }) => {
           image: NodeImageProgram,
         },
         allowInvalidContainer: true,
-        renderLabels: true,
-        labelSize: 14,
-        labelFont: "Arial",
-        labelWeight: "normal",
-        labelColor: { color: "#000" }
+        renderLabels: false,
       }}
       style={style}
       className={className}
     >
       <Graph disableHoverEffect={false} />
       {isLeafNode && selectedNode && (
-        <TaskCard tasks={tasks} setTasks={setTasks} className="fixed z-20 top-10 left-10 w-3/12" />
+        <TaskCard
+          tasks={selectedNode ? nodeTasks[selectedNode] ?? [] : []}
+          setTasks={setNodeTasks}
+          className="fixed z-20 top-10 left-10 w-3/12"
+          currentNode={selectedNode}
+        />
       )}
-      <XpProgress value={10} className="left-15 absolute" />
+      <XpProgress
+        value={(() => {
+          const allTasks = Object.values(nodeTasks).flat();
+          const total = allTasks.length;
+          if (total === 0) return 0;
+
+          const completed = allTasks.filter(task => task.completed).length;
+          return (completed / total) * 100;
+        })()}
+        className="left-15 absolute" />
       <FocusOnNode node={focusNode ?? selectedNode} />
       <ControlsContainer position={"bottom-right"}>
         <ZoomControl />

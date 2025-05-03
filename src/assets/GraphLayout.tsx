@@ -17,7 +17,6 @@ const Content = () => {
       <Toolbar
         className="flex justify-center items-center w-full"
         onAddNode={(data: { icon: string; title: string }) => {
-          console.log("HUI3: Node added:", data);
           addNode(data);
         }}
       />

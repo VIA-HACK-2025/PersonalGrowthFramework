@@ -26,38 +26,18 @@ export const Graph: FC<{ disableHoverEffect: boolean }> = ({ disableHoverEffect 
 
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
 
+
+  useEffect(() => {
+    (async () => {
+      loadGraph(await loadedGraph());
+    })();
+  }, [loadGraph, loadedGraph]);
+
   const memoizedRegisterEvents = useCallback(registerEvents, []);
   const memoizedRegisterAddNodeImplementation = useCallback(registerAddNodeImplementation, []);
   const memoizedAddNode = useCallback(addNode, [addNode]);
   const memoizedSetSelectedNode = useCallback(setSelectedNode, []);
   const memoizedSetIsLeafNode = useCallback(setIsLeafNode, []);
-
-
-  useEffect(() => {
-    let isMounted = true;
-
-    const setup = async () => {
-      const graph = await loadedGraph();
-
-      if (!isMounted) return;
-
-      memoizedRegisterAddNodeImplementation((data) => memoizedAddNode(data));
-      loadGraph(graph);
-    };
-
-    setup();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [
-    loadGraph,
-    loadedGraph,
-    memoizedRegisterAddNodeImplementation,
-    memoizedAddNode,
-  ]);
-
-
 
   useEffect(() => {
     memoizedRegisterEvents({
@@ -162,6 +142,10 @@ export const Graph: FC<{ disableHoverEffect: boolean }> = ({ disableHoverEffect 
           hidden: !isIncident,
         };
       },
+    });
+
+    registerAddNodeImplementation((data) => {
+      addNode(data);
     });
   }, [hoveredNode, selectedNode, setSettings, sigma, disableHoverEffect]);
 

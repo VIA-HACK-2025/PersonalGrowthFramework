@@ -20,7 +20,6 @@ const Toolbar: React.FC<ToolbarProps> = ({ className, onAddNode }) => {
             : "bg-blue-500 hover:bg-blue-600"
           }`}
         onClick={({ icon, title }) => {
-          console.log("HUI2: Node added:", { icon, title });
           onAddNode?.({ icon, title });
         }}
         disabled={isDisabled}
