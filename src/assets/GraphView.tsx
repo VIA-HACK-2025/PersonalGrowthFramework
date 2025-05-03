@@ -15,6 +15,7 @@ import { LayoutsControl } from "./graph_utils/LayoutControls";
 import { Graph } from "./graph_utils/Graph";
 import { Task, TaskCard } from "../components/ui/TaskItem";
 import { useGraphContext } from "./context/GraphContext";
+import { XpProgress } from "../components/ui/XpProgress";
 
 interface GraphProps {
   style?: CSSProperties;
@@ -73,6 +74,7 @@ export const GraphView: FC<GraphProps> = ({ style, className }) => {
       {isLeafNode && selectedNode && (
         <TaskCard tasks={tasks} setTasks={setTasks} className="fixed z-20 top-10 left-10 w-3/12" />
       )}
+      <XpProgress value={10} className="left-15 absolute" />
       <FocusOnNode node={focusNode ?? selectedNode} />
       <ControlsContainer position={"bottom-right"}>
         <ZoomControl />

@@ -2,7 +2,7 @@ import { useCallback, useRef } from "react";
 import Graph from "graphology";
 import { useSigma } from "@react-sigma/core";
 import { useGraphContext } from "../context/GraphContext";
-import { initialGraph } from "../../fixtures/init_graph";
+import { createInitialGraph } from "../../fixtures/init_graph";
 import { generateGraph } from "../../utils/from_db_mapper";
 
 interface useGraphProps {
@@ -28,20 +28,20 @@ export const useGraph = (props: useGraphProps) => {
   const descendantCounts = useRef<Map<string, number>>(new Map());
 
   const loadedGraph = useCallback(async (): Promise<Graph> => {
-    const dbGraph = await generateGraph();
-    if (!dbGraph) {
-      descendantCounts.current.set("me", 0);
-      return initialGraph;
-    }
-    console.log("Graph loaded from DB:", dbGraph.nodes()[0]);
-    descendantCounts.current.set(dbGraph.nodes()[0], 0);
-    return dbGraph;
+    // const dbGraph = await generateGraph();
+    // if (dbGraph && dbGraph.order > 0) {
+    //   console.log("Graph loaded from DB:", dbGraph.nodes()[0]);
+    //   descendantCounts.current.set(dbGraph.nodes()[0], 0);
+    //   return dbGraph;
+    // }
+
+    // console.warn("Couldn't fetch data from server.");
+    return createInitialGraph()
   }, []);
+
 
   const addNode = useCallback(
     (data: { icon?: string; title?: string }) => {
-      console.log("HUI4: Node added:", data);
-      if (!selectedNode) return;
       const graph = sigma.getGraph();
       if (!graph.hasNode(selectedNode)) return;
 
@@ -73,6 +73,7 @@ export const useGraph = (props: useGraphProps) => {
           ? `https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/72x72/${emojiToTwemojiCode(data.icon)}.png`
           : undefined,
       });
+
       graph.addEdge(selectedNode, newId, {
         size: 2,
         color: "#94A3B8",
@@ -85,7 +86,8 @@ export const useGraph = (props: useGraphProps) => {
         const prev = descendantCounts.current.get(curr) || 0;
         descendantCounts.current.set(curr, prev + 1);
 
-        if (curr !== "me") {
+        // Optional: reset color unless it's a root
+        if (graph.getNodeAttribute(curr, "parent") !== null) {
           graph.setNodeAttribute(curr, "color", props.nodeColors.default);
         }
 
@@ -101,6 +103,7 @@ export const useGraph = (props: useGraphProps) => {
       }
 
       graph.setNodeAttribute(newId, "size", 8);
+
     },
     [sigma, selectedNode, props.nodeColors.leaf, props.nodeColors.default]
   );
