@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import apiUrl from "./const.json";
+import { apiUrl } from "./const.ts";
 const apiUri = "tasks";
 
 export const createTask = async (parentId: string) => {

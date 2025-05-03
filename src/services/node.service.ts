@@ -1,11 +1,17 @@
 import axios from "axios";
 
-import apiUrl from "./const.json";
+import { apiUrl } from "./const.ts";
 const apiUri = "nodes";
 
-export const createNode = async (parentId?: string, info?: { title?: string; icon?: string }) => {
+export const createNode = async (
+  parentId?: string,
+  info?: { title?: string; icon?: string }
+) => {
   try {
-    const response = await axios.post(`${apiUrl}/${apiUri}/`, { parentId, info });
+    const response = await axios.post(`${apiUrl}/${apiUri}/`, {
+      parentId,
+      info,
+    });
     return response.data;
   } catch (error) {
     console.error("Error creating node:", error);
@@ -26,6 +32,7 @@ export const getNode = async (id: string) => {
 export const getAllNodes = async () => {
   try {
     const response = await axios.get(`${apiUrl}/${apiUri}`);
+
     return response.data;
   } catch (error) {
     console.error("Error getting all nodes:", error);
@@ -42,4 +49,3 @@ export const deleteNodeById = async (id: string) => {
     throw error;
   }
 };
-

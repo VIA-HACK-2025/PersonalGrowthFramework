@@ -2,6 +2,8 @@ import { useCallback, useRef } from "react";
 import Graph from "graphology";
 import { useSigma } from "@react-sigma/core";
 import { useGraphContext } from "../context/GraphContext";
+import { initialGraph } from "../../fixtures/init_graph";
+import { generateGraph } from "../../utils/from_db_mapper";
 
 interface useGraphProps {
   nodeColors: {
@@ -17,20 +19,16 @@ export const useGraph = (props: useGraphProps) => {
 
   const descendantCounts = useRef<Map<string, number>>(new Map());
 
-  const loadedGraph = useCallback(() => {
-    const g = new Graph();
-    g.addNode("me", {
-      label: "me",
-      x: 0,
-      y: 0,
-      size: 10,
-      color: props.nodeColors.root,
-      parent: null,
-      baseSize: 10,
-    });
-    descendantCounts.current.set("me", 0);
-    return g;
-  }, [props.nodeColors.root]);
+  const loadedGraph = useCallback(async (): Promise<Graph> => {
+    const dbGraph = await generateGraph();
+    if (!dbGraph) {
+      descendantCounts.current.set("me", 0);
+      return initialGraph;
+    }
+    console.log("Graph loaded from DB:", dbGraph.nodes()[0]);
+    descendantCounts.current.set(dbGraph.nodes()[0], 0);
+    return dbGraph;
+  }, []);
 
   const addNode = useCallback(() => {
     if (!selectedNode) return;

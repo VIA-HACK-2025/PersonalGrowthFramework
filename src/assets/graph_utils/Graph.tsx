@@ -24,8 +24,11 @@ export const Graph: FC<{ disableHoverEffect: boolean }> = ({ disableHoverEffect 
 
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    loadGraph(loadedGraph());
+    (async () => {
+      loadGraph(await loadedGraph());
+    })();
   }, [loadGraph, loadedGraph]);
 
   useEffect(() => {
