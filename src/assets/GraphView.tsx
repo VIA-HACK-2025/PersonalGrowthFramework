@@ -9,11 +9,11 @@ import { GraphSearch, GraphSearchOption } from "@react-sigma/graph-search";
 import "@react-sigma/graph-search/lib/style.css";
 import { CSSProperties, FC, useCallback, useState } from "react";
 
-import { FocusOnNode } from "./common/FocusOnNode";
-import { LayoutsControl } from "./common/LayoutControls";
-import { Graph } from "./common/Graph";
+import { FocusOnNode } from "./graph_utils/FocusOnNode";
+import { LayoutsControl } from "./graph_utils/LayoutControls";
+import { Graph } from "./graph_utils/Graph";
 
-interface GraphProps{
+interface GraphProps {
   style?: CSSProperties,
   className?: string
 }
@@ -35,22 +35,33 @@ export const GraphView: FC<GraphProps> = ({ style, className }) => {
       return options.length <= 10
         ? options
         : [
-            ...options.slice(0, 10),
-            {
-              type: "message",
-              message: (
-                <span className="text-center text-muted">
-                  And {options.length - 10} others
-                </span>
-              ),
-            },
-          ];
+          ...options.slice(0, 10),
+          {
+            type: "message",
+            message: (
+              <span className="text-center text-muted">
+                And {options.length - 10} others
+              </span>
+            ),
+          },
+        ];
     },
     []
   );
 
   return (
-    <SigmaContainer settings={{ allowInvalidContainer: true }} style={style} className={className}>
+    <SigmaContainer
+    settings={{
+      allowInvalidContainer: true,
+      renderLabels: true,
+      labelSize: 14,
+      labelFont: "Arial",
+      labelWeight: "normal",
+      labelColor: { color: "#000" }
+    }}
+      style={style}
+      className={className}
+    >
       <Graph disableHoverEffect={false} />
       <FocusOnNode node={focusNode ?? selectedNode} />
       <ControlsContainer position={"bottom-right"}>

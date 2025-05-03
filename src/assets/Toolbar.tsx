@@ -1,6 +1,6 @@
 import React from 'react';
 import { FaPlus } from 'react-icons/fa';
-import { useGraphContext } from './context/GraphSelectionContext';
+import { useGraphContext } from './context/GraphContext';
 
 interface ToolbarProps {
   className?: string;

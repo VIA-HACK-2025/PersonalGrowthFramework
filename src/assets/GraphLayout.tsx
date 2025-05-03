@@ -1,6 +1,6 @@
 // ./assets/GraphLayout.tsx
 import React from "react";
-import { GraphProvider, useGraphContext as useGraphContext } from "./context/GraphSelectionContext";
+import { GraphProvider, useGraphContext as useGraphContext } from "./context/GraphContext";
 import { GraphView } from "./GraphView";
 import Toolbar from "./Toolbar";
 

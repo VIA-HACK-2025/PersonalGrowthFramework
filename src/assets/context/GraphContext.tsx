@@ -1,4 +1,3 @@
-// src/context/GraphSelectionContext.tsx
 import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
 
 interface GraphContextType {
