@@ -9,7 +9,7 @@ import { useGraph } from "../hooks/useGraph";
 import { useGraphContext } from "../context/GraphContext";
 
 export const Graph: FC<{ disableHoverEffect: boolean }> = ({ disableHoverEffect }) => {
-  const { selectedNode, setSelectedNode, registerAddNode } = useGraphContext();
+  const { selectedNode, setSelectedNode, registerAddNodeImplementation } = useGraphContext();
   const { loadedGraph, addNode } = useGraph({
     nodeColors: {
       root: "purple",
@@ -38,9 +38,7 @@ export const Graph: FC<{ disableHoverEffect: boolean }> = ({ disableHoverEffect 
       downNode: ({ node }) => setSelectedNode(node),
       downStage: () => setSelectedNode(null),
     });
-
-    registerAddNode(() => addNode());
-  }, [registerEvents, registerAddNode, addNode, setSelectedNode]);
+  }, [registerEvents, setSelectedNode]);
 
   useEffect(() => {
     setSettings({
@@ -116,6 +114,10 @@ export const Graph: FC<{ disableHoverEffect: boolean }> = ({ disableHoverEffect 
           hidden: !isIncident,
         };
       },
+    });
+
+    registerAddNodeImplementation((data) => {
+      addNode(data);
     });
   }, [hoveredNode, selectedNode, setSettings, sigma, disableHoverEffect]);
 

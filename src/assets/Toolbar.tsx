@@ -1,10 +1,11 @@
-import React from 'react';
-import { FaPlus } from 'react-icons/fa';
-import { useGraphContext } from './context/GraphContext';
+import React from "react";
+import { FaPlus } from "react-icons/fa";
+import { useGraphContext } from "./context/GraphContext";
+import { NodeDialogCard } from "../components/ui/node-dialog-card";
 
 interface ToolbarProps {
   className?: string;
-  onAddNode?: React.MouseEventHandler<HTMLButtonElement>;
+  onAddNode?: (data: { icon: string; title: string }) => any;
 }
 
 const Toolbar: React.FC<ToolbarProps> = ({ className, onAddNode }) => {
@@ -13,14 +14,19 @@ const Toolbar: React.FC<ToolbarProps> = ({ className, onAddNode }) => {
 
   return (
     <div className={className}>
-      <button
+      <NodeDialogCard
         className={`w-12 h-12 rounded-full text-white flex items-center justify-center
-          ${isDisabled ? 'bg-blue-500 opacity-50 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600'}`}
-        onClick={onAddNode}
+          ${
+            isDisabled
+              ? "bg-blue-500 opacity-50 cursor-not-allowed"
+              : "bg-blue-500 hover:bg-blue-600"
+          }`}
+        onClick={({ icon, title }) => {
+          console.log("HUI2: Node added:", { icon, title });
+          onAddNode?.({ icon, title });
+        }}
         disabled={isDisabled}
-      >
-        <FaPlus />
-      </button>
+      />
     </div>
   );
 };

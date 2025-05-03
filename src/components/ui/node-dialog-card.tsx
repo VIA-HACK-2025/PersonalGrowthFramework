@@ -9,12 +9,24 @@ import {
 } from "../dialog";
 import { Input } from "../input";
 
-import EmojiPicker, { EmojiStyle } from "emoji-picker-react"; // make sure to use default import if you exported default
+import EmojiPicker, { EmojiStyle } from "emoji-picker-react";
+import { FaPlus } from "react-icons/fa";
 
-export function NodeDialogCard() {
+interface NodeDialogCardProps {
+  className?: string;
+  onClick?: (data: { icon: string; title: string }) => any;
+  disabled?: boolean;
+}
+
+export function NodeDialogCard({
+  className,
+  onClick,
+  disabled,
+}: NodeDialogCardProps) {
   const [title, setTitle] = useState("");
-  const [emoji, setEmoji] = useState("Select emoji");
+  const [emoji, setEmoji] = useState("Emoji");
   const [showPicker, setShowPicker] = useState(false);
+  const [open, setOpen] = useState(false);
 
   const handleEmojiClick = (emojiData: any) => {
     setEmoji(emojiData.emoji);
@@ -22,15 +34,33 @@ export function NodeDialogCard() {
   };
 
   const handleSave = () => {
-    console.log("Title:", title);
-    console.log("Selected emoji:", emoji);
-    // Add save logic here (e.g., API call)
+    if (emoji !== "Emoji" || title.trim() !== "") {
+      console.log("HUI1: Node added:", { icon: emoji, title });
+      onClick?.({ icon: emoji, title });
+    }
+    setOpen(false);
   };
 
   return (
-    <Dialog>
+    <Dialog
+      open={open}
+      onOpenChange={(isOpen) => {
+        setOpen(isOpen);
+        if (!isOpen) {
+          setTitle("");
+          setEmoji("Emoji");
+          setShowPicker(false);
+        }
+      }}
+    >
       <DialogTrigger asChild>
-        <Button>Edit Profile</Button>
+        <button
+          className={className}
+          disabled={disabled}
+          onClick={() => setOpen(true)}
+        >
+          <FaPlus />
+        </button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
@@ -44,14 +74,8 @@ export function NodeDialogCard() {
             onChange={(e) => setTitle(e.target.value)}
             className="col-span-3"
           />
-
           <div className="flex items-center gap-4">
-            <Button
-              type="button"
-              onClick={() => {
-                setShowPicker(true);
-              }}
-            >
+            <Button type="button" onClick={() => setShowPicker(true)}>
               {emoji}
             </Button>
             <div className="absolute z-10">
@@ -62,7 +86,7 @@ export function NodeDialogCard() {
                 />
               )}
             </div>
-            <Button type="button" onClick={handleSave} size={"lg"}>
+            <Button type="button" onClick={handleSave} size="lg">
               Save changes
             </Button>
           </div>

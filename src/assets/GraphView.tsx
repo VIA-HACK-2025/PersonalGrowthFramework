@@ -13,6 +13,7 @@ import { NodeImageProgram } from "@sigma/node-image";
 import { FocusOnNode } from "./graph_utils/FocusOnNode";
 import { LayoutsControl } from "./graph_utils/LayoutControls";
 import { Graph } from "./graph_utils/Graph";
+import { GraphContextInitializer } from "./context/GraphContextInitializer";
 
 interface GraphProps {
   style?: CSSProperties,

@@ -1,11 +1,15 @@
 import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
 
+interface AddNodeProps{
+  icon: string;
+  title: string;
+}
+
 interface GraphContextType {
     selectedNode: string | null;
     setSelectedNode: (node: string | null) => void;
-    addNode: () => void;
-    registerAddNode: (callback: () => void) => void;
-    isReady: boolean
+    addNode: (data: AddNodeProps) => void;
+    registerAddNodeImplementation: (callback: (data: AddNodeProps) => void) => void;
 }
 
 const GraphContext = createContext<GraphContextType | null>(null);
@@ -24,19 +28,23 @@ interface GraphProviderProps {
 
 export const GraphProvider: React.FC<GraphProviderProps> = ({ children }) => {
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
-  const [addNodeCallback, setAddNodeCallback] = useState<() => void>(() => {
+  const [addNodeFunction, setAddNodeFunction] = useState<(data: AddNodeProps) => void>(() => {
     console.warn('addNode was called before it was registered');
   });
-  const [isReady, setIsReady] = useState(false);
 
-  const registerAddNode = useCallback((callback: () => void) => {
-    setAddNodeCallback(() => callback);
-    setIsReady(true);
+
+  const registerAddNodeImplementation = useCallback((implementation: (data: AddNodeProps) => void) => {
+    setAddNodeFunction(() => implementation);
   }, []);
 
-  const addNode = useCallback(() => {
-    addNodeCallback();
-  }, [addNodeCallback]);
+  const addNode = useCallback((data: AddNodeProps) => {
+    if (addNodeFunction) {
+      addNodeFunction(data);
+    } else {
+      console.warn('addNode was called before a handler was registered');
+    }
+  }, [addNodeFunction]);
+  
 
   return (
     <GraphContext.Provider
@@ -44,8 +52,7 @@ export const GraphProvider: React.FC<GraphProviderProps> = ({ children }) => {
         selectedNode,
         setSelectedNode,
         addNode,
-        registerAddNode,
-        isReady
+        registerAddNodeImplementation,
       }}
     >
       {children}
