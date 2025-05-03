@@ -74,21 +74,23 @@ export type TaskItemProps = {
 export function TaskItem({ task, onToggle, onTextChange }: TaskItemProps) {
   return (
     <Card className="w-full">
-      <CardContent className="flex items-center gap-3 p-3">
-        <Checkbox
-          checked={task.completed}
-          onCheckedChange={onToggle}
-          className="shrink-0"
-        />
+      <CardContent className="flex items-center gap-3 py-2">
+        <div className="flex items-center h-9">
+          <Checkbox
+            checked={task.completed}
+            onCheckedChange={onToggle}
+            className="shrink-0"
+          />
+        </div>
 
         <Input
           value={task.text}
           onChange={(e) => onTextChange(e.target.value)}
           placeholder="Enter your task here"
-          className="w-40"
-          style={{ outline: "none", border: "none" }}
+          className="flex-1 h-9"
         />
       </CardContent>
     </Card>
+
   );
 }

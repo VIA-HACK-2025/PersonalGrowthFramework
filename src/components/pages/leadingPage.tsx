@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Header } from "../header/header";
 import myImage from "../../../public/leone-venter-VieM9BdZKFo-unsplash.jpg";
 import { NodeDialogCard } from "../ui/node-dialog-card";
-import { TaskCard } from "../ui/TaskItem";
+import { XpProgress } from "../ui/XPProgress";
 
 export function LandingPage() {
   const navigate = useNavigate();
@@ -27,7 +27,7 @@ export function LandingPage() {
           </Button>
 
           <NodeDialogCard />
-          <TaskCard tasks={[]} />
+          <XpProgress value={10} className="m-1.5" />
         </div>
       </div>
     </div>
