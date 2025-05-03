@@ -6,12 +6,14 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { GraphDemo } from "./assets/GraphDemo";
 import Toolbar from "./assets/Toolbar";
 import { LandingPage } from "./components/pages/leadingPage"; // <- create this
+import { LoginPage } from "./components/pages/loginPage";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<LoginPage />} />
         <Route
           path="/graph"
           element={

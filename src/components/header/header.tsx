@@ -1,5 +1,7 @@
+import { useNavigate } from "react-router-dom";
 import { Button } from "../button";
 export function Header() {
+  const navigate = useNavigate();
   return (
     <header className="w-full flex justify-between px-4 py-3 bg-background shadow">
       {/* Logo / Brand */}
@@ -15,7 +17,11 @@ export function Header() {
 
       {/* Right side: User menu */}
       <div className="flex flex-1 gap-2">
-        <Button size={"lg"} variant={"secondary"}>
+        <Button
+          size={"lg"}
+          variant={"secondary"}
+          onClick={() => navigate("/login")}
+        >
           Login
         </Button>
       </div>
