@@ -38,16 +38,16 @@ export const GraphView: FC<GraphProps> = ({ style, className }) => {
       return options.length <= 10
         ? options
         : [
-          ...options.slice(0, 10),
-          {
-            type: "message",
-            message: (
-              <span className="text-center text-muted">
-                And {options.length - 10} others
-              </span>
-            ),
-          },
-        ];
+            ...options.slice(0, 10),
+            {
+              type: "message",
+              message: (
+                <span className="text-center text-muted">
+                  And {options.length - 10} others
+                </span>
+              ),
+            },
+          ];
     },
     []
   );
@@ -60,18 +60,18 @@ export const GraphView: FC<GraphProps> = ({ style, className }) => {
           image: NodeImageProgram,
         },
         allowInvalidContainer: true,
-        renderLabels: true,
-        labelSize: 14,
-        labelFont: "Arial",
-        labelWeight: "normal",
-        labelColor: { color: "#000" }
+        renderLabels: false,
       }}
       style={style}
       className={className}
     >
       <Graph disableHoverEffect={false} />
       {isLeafNode && selectedNode && (
-        <TaskCard tasks={tasks} setTasks={setTasks} className="fixed z-20 top-10 left-10 w-3/12" />
+        <TaskCard
+          tasks={tasks}
+          setTasks={setTasks}
+          className="fixed z-20 top-10 left-10 w-3/12"
+        />
       )}
       <FocusOnNode node={focusNode ?? selectedNode} />
       <ControlsContainer position={"bottom-right"}>

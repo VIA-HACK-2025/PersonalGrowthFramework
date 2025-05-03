@@ -9,13 +9,13 @@ export const generateGraph = async () => {
 
   nodes.forEach((node) => {
     graph.addNode(node._id, {
-      label: node.info?.title ?? "",
-      size: 15,
-      color: "#10B981",
+      label: null,
+      size: 32,
+      color: "#000000",
       x: 0,
       y: 0,
       parent: null,
-      baseSize: 10,
+      baseSize: 32,
       image:
         "https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/72x72/1f600.png",
     });

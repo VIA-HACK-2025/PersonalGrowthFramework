@@ -35,7 +35,6 @@ export function NodeDialogCard({
 
   const handleSave = () => {
     if (emoji !== "Emoji" || title.trim() !== "") {
-      console.log("HUI1: Node added:", { icon: emoji, title });
       onClick?.({ icon: emoji, title });
     }
     setOpen(false);

@@ -15,11 +15,10 @@ interface useGraphProps {
 
 function emojiToTwemojiCode(emoji: string): string {
   return [...emoji]
-    .map(char => char.codePointAt(0)?.toString(16))
+    .map((char) => char.codePointAt(0)?.toString(16))
     .filter(Boolean)
     .join("-");
 }
-
 
 export const useGraph = (props: useGraphProps) => {
   const sigma = useSigma();
@@ -40,7 +39,6 @@ export const useGraph = (props: useGraphProps) => {
 
   const addNode = useCallback(
     (data: { icon?: string; title?: string }) => {
-      console.log("HUI4: Node added:", data);
       if (!selectedNode) return;
       const graph = sigma.getGraph();
       if (!graph.hasNode(selectedNode)) return;
@@ -53,7 +51,7 @@ export const useGraph = (props: useGraphProps) => {
         p = graph.getNodeAttribute(p, "parent") as string | null;
         if (p) depth++;
       }
-      const offset = 1 / Math.pow(3, depth + 1);
+      const offset = 1 / Math.pow(2, depth + 1);
 
       const x0 = graph.getNodeAttribute(selectedNode, "x") as number;
       const y0 = graph.getNodeAttribute(selectedNode, "y") as number;
@@ -62,15 +60,17 @@ export const useGraph = (props: useGraphProps) => {
       const y = y0 + Math.sin(angle) * offset;
 
       graph.addNode(newId, {
-        label: data.title || "",
+        label: null,
         x,
         y,
-        size: 8,
+        size: 32,
         color: props.nodeColors.leaf,
         parent: selectedNode,
-        baseSize: 8,
+        baseSize: 32,
         image: data.icon
-          ? `https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/72x72/${emojiToTwemojiCode(data.icon)}.png`
+          ? `https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/72x72/${emojiToTwemojiCode(
+              data.icon
+            )}.png`
           : undefined,
       });
       graph.addEdge(selectedNode, newId, {
@@ -100,7 +100,7 @@ export const useGraph = (props: useGraphProps) => {
         curr = graph.getNodeAttribute(curr, "parent") as string | null;
       }
 
-      graph.setNodeAttribute(newId, "size", 8);
+      graph.setNodeAttribute(newId, "size", 32);
     },
     [sigma, selectedNode, props.nodeColors.leaf, props.nodeColors.default]
   );
