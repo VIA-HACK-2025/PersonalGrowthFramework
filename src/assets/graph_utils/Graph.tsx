@@ -4,12 +4,14 @@ import {
   useSetSettings,
   useSigma,
 } from "@react-sigma/core";
-import { FC, useEffect, useState } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
 import { useGraph } from "../hooks/useGraph";
 import { useGraphContext } from "../context/GraphContext";
 
+
+
 export const Graph: FC<{ disableHoverEffect: boolean }> = ({ disableHoverEffect }) => {
-  const { selectedNode, setSelectedNode, registerAddNodeImplementation } = useGraphContext();
+  const { selectedNode, setSelectedNode, registerAddNodeImplementation, setIsLeafNode } = useGraphContext();
   const { loadedGraph, addNode } = useGraph({
     nodeColors: {
       root: "purple",
@@ -24,21 +26,47 @@ export const Graph: FC<{ disableHoverEffect: boolean }> = ({ disableHoverEffect 
 
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+
   useEffect(() => {
     (async () => {
       loadGraph(await loadedGraph());
     })();
   }, [loadGraph, loadedGraph]);
 
+  const memoizedRegisterEvents = useCallback(registerEvents, []);
+  const memoizedRegisterAddNodeImplementation = useCallback(registerAddNodeImplementation, []);
+  const memoizedAddNode = useCallback(addNode, [addNode]);
+  const memoizedSetSelectedNode = useCallback(setSelectedNode, []);
+  const memoizedSetIsLeafNode = useCallback(setIsLeafNode, []);
+
   useEffect(() => {
-    registerEvents({
+    memoizedRegisterEvents({
       enterNode: ({ node }) => setHoveredNode(node),
       leaveNode: () => setHoveredNode(null),
-      downNode: ({ node }) => setSelectedNode(node),
-      downStage: () => setSelectedNode(null),
+      downNode: ({ node }) => {
+        setSelectedNode(node);
+        requestAnimationFrame(() => {
+          const graph = sigma.getGraph();
+          const isLeaf = graph.hasNode(node) && graph.outNeighbors(node).length === 0;
+          setIsLeafNode(isLeaf);
+          console.log("isLeaf:", isLeaf);
+        });
+      },
+      downStage: () => {
+        setSelectedNode(null);
+        setIsLeafNode(false);
+      }
     });
-  }, [registerEvents, setSelectedNode]);
+
+    memoizedRegisterAddNodeImplementation((data) => memoizedAddNode(data));
+  }, [
+    memoizedRegisterEvents,
+    memoizedRegisterAddNodeImplementation,
+    memoizedAddNode,
+    memoizedSetSelectedNode,
+    memoizedSetIsLeafNode,
+    sigma,
+  ]);
 
   useEffect(() => {
     setSettings({

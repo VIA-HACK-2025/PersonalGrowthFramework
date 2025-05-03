@@ -1,15 +1,17 @@
 import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
 
-interface AddNodeProps{
+interface AddNodeProps {
   icon: string;
   title: string;
 }
 
 interface GraphContextType {
-    selectedNode: string | null;
-    setSelectedNode: (node: string | null) => void;
-    addNode: (data: AddNodeProps) => void;
-    registerAddNodeImplementation: (callback: (data: AddNodeProps) => void) => void;
+  selectedNode: string | null;
+  setSelectedNode: (node: string | null) => void;
+  addNode: (data: AddNodeProps) => void;
+  registerAddNodeImplementation: (callback: (data: AddNodeProps) => void) => void;
+  isLeafNode: boolean;
+  setIsLeafNode: (value: boolean) => void;
 }
 
 const GraphContext = createContext<GraphContextType | null>(null);
@@ -28,6 +30,7 @@ interface GraphProviderProps {
 
 export const GraphProvider: React.FC<GraphProviderProps> = ({ children }) => {
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
+  const [isLeafNode, setIsLeafNode] = useState(false);
   const [addNodeFunction, setAddNodeFunction] = useState<(data: AddNodeProps) => void>(() => {
     console.warn('addNode was called before it was registered');
   });
@@ -44,7 +47,7 @@ export const GraphProvider: React.FC<GraphProviderProps> = ({ children }) => {
       console.warn('addNode was called before a handler was registered');
     }
   }, [addNodeFunction]);
-  
+
 
   return (
     <GraphContext.Provider
@@ -53,6 +56,8 @@ export const GraphProvider: React.FC<GraphProviderProps> = ({ children }) => {
         setSelectedNode,
         addNode,
         registerAddNodeImplementation,
+        isLeafNode,
+        setIsLeafNode
       }}
     >
       {children}

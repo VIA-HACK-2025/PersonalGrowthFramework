@@ -4,8 +4,6 @@ import './index.css'
 import GraphLayout from './assets/GraphLayout';
 import "./index.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
-import Toolbar from "./assets/Toolbar";
 import { LandingPage } from "./components/pages/leadingPage";
 import { LoginPage } from "./components/pages/loginPage";
 

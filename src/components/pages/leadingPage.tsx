@@ -1,9 +1,8 @@
 import { Button } from "../button";
 import { useNavigate } from "react-router-dom";
 import { Header } from "../header/header";
-import myImage from "../../../public/leone-venter-VieM9BdZKFo-unsplash.jpg";
-import { NodeDialogCard } from "../ui/node-dialog-card";
-import { TaskCard } from "../ui/TaskItem";
+import myImage from "../../../public/landing-page-back.jpg";
+import { XpProgress } from "../ui/XpProgress";
 
 export function LandingPage() {
   const navigate = useNavigate();
@@ -22,12 +21,10 @@ export function LandingPage() {
           <p className="text-lg mb-6">
             Track your learning and time with visual graphs!
           </p>
-          <Button onClick={() => navigate("/graph")} className="">
+          <Button onClick={() => navigate("/graph")} className="w-2xl h-16 !text-2xl">
             Go to Graph Page
           </Button>
-
-          <NodeDialogCard />
-          <TaskCard />
+          <XpProgress value={10} className="m-1.5" />
         </div>
       </div>
     </div>

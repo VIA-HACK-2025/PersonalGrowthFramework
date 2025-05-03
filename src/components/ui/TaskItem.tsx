@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../card";
 import { Button } from "../button";
 import { Checkbox } from "../checkbox";
+import { Input } from "../input";
 
 export type Task = {
   id: number;
@@ -9,15 +10,18 @@ export type Task = {
   completed: boolean;
 };
 
-export function TaskCard() {
-  const [tasks, setTasks] = useState<Task[]>([
-    { id: 1, text: "First task", completed: false },
-  ]);
+interface TaskCardProps extends React.HTMLAttributes<HTMLDivElement> {
+  tasks: Task[];
+  setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
+}
+
+
+export function TaskCard({ tasks: tasks, setTasks, ...className }: TaskCardProps) {
 
   const addTask = () => {
     const newTask: Task = {
-      id: Date.now(),
-      text: `New Task ${tasks.length + 1}`,
+      id: tasks.length === 0 ? 0 : tasks[tasks.length - 1].id + 1,
+      text: "",
       completed: false,
     };
     setTasks([...tasks, newTask]);
@@ -31,8 +35,16 @@ export function TaskCard() {
     );
   };
 
+  const updateTaskText = (id: number, newText: string) => {
+    setTasks((prev) =>
+      prev.map((task) =>
+        task.id === id ? { ...task, text: newText } : task
+      )
+    );
+  };
+
   return (
-    <Card className="w-full max-w-md">
+    <Card className="w-full max-w-md" {...className}>
       <CardHeader>
         <CardTitle>My Tasks</CardTitle>
       </CardHeader>
@@ -42,6 +54,7 @@ export function TaskCard() {
             key={task.id}
             task={task}
             onToggle={() => toggleTask(task.id)}
+            onTextChange={(newText) => updateTaskText(task.id, newText)}
           />
         ))}
         <Button variant="outline" onClick={addTask}>
@@ -55,25 +68,29 @@ export function TaskCard() {
 export type TaskItemProps = {
   task: Task;
   onToggle: () => void;
+  onTextChange: (newText: string) => void;
 };
 
-export function TaskItem({ task, onToggle }: TaskItemProps) {
+export function TaskItem({ task, onToggle, onTextChange }: TaskItemProps) {
   return (
     <Card className="w-full">
-      <CardContent className="flex items-center gap-3 p-3">
-        <Checkbox
-          checked={task.completed}
-          onCheckedChange={onToggle}
-          className="shrink-0"
+      <CardContent className="flex items-center gap-3 py-2">
+        <div className="flex items-center h-9">
+          <Checkbox
+            checked={task.completed}
+            onCheckedChange={onToggle}
+            className="shrink-0"
+          />
+        </div>
+
+        <Input
+          value={task.text}
+          onChange={(e) => onTextChange(e.target.value)}
+          placeholder="Enter your task here"
+          className="flex-1 h-9"
         />
-        <span
-          className={`truncate ${
-            task.completed ? "line-through text-muted-foreground" : ""
-          }`}
-        >
-          {task.text}
-        </span>
       </CardContent>
     </Card>
+
   );
 }
