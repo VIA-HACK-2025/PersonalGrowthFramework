@@ -44,7 +44,7 @@ export const Graph: FC<{ disableHoverEffect: boolean }> = ({ disableHoverEffect 
         setSelectedNode(node);
         requestAnimationFrame(() => {
           const graph = sigma.getGraph();
-          const isLeaf = graph.hasNode(node) && graph.neighbors(node).length === 0;
+          const isLeaf = graph.hasNode(node) && graph.outNeighbors(node).length === 0;
           setIsLeafNode(isLeaf);
           console.log("isLeaf:", isLeaf);
         });

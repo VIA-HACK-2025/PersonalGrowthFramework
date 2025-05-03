@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../card";
 import { Button } from "../button";
 import { Checkbox } from "../checkbox";
@@ -16,8 +16,7 @@ interface TaskCardProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 
-export function TaskCard({ tasks: initialTasks, ...className }: TaskCardProps) {
-  const [tasks, setTasks] = useState<Task[]>(initialTasks);
+export function TaskCard({ tasks: tasks, setTasks, ...className }: TaskCardProps) {
 
   const addTask = () => {
     const newTask: Task = {
