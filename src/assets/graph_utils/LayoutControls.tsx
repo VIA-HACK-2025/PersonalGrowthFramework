@@ -33,7 +33,7 @@ type LayoutName =
 
 export const LayoutsControl: React.FC = () => {
   const sigma = useSigma();
-  const [layout, setLayout] = useState<LayoutName>("circular");
+  const [layout, setLayout] = useState<LayoutName>("forceDirected");
   const [opened, setOpened] = useState<boolean>(false);
   const layoutCircular = useLayoutCircular();
   const layoutCirclepack = useLayoutCirclepack();
@@ -100,7 +100,7 @@ export const LayoutsControl: React.FC = () => {
     <>
       <div>
         {layouts[layout] && "worker" in layouts[layout] && (
-          <WorkerLayoutControl layout={layouts[layout].worker!} />
+          <WorkerLayoutControl layout={layouts[layout].worker!} autoRunFor={100000000} />
         )}
       </div>
       <div>
