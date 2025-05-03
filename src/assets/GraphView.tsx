@@ -24,6 +24,7 @@ interface GraphProps {
 export const GraphView: FC<GraphProps> = ({ style, className }) => {
   const { isLeafNode, selectedNode } = useGraphContext();
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [nodeTasks, setNodeTasks] = useState<Record<string, Task[]>>({});
   const [focusNode, setFocusNode] = useState<string | null>(null);
 
   const onFocus = useCallback((value: GraphSearchOption | null) => {
@@ -68,9 +69,10 @@ export const GraphView: FC<GraphProps> = ({ style, className }) => {
       <Graph disableHoverEffect={false} />
       {isLeafNode && selectedNode && (
         <TaskCard
-          tasks={tasks}
-          setTasks={setTasks}
+          tasks={selectedNode ? nodeTasks[selectedNode] ?? [] : []}
+          setTasks={setNodeTasks}
           className="fixed z-20 top-10 left-10 w-3/12"
+          currentNode={selectedNode}
         />
       )}
       <FocusOnNode node={focusNode ?? selectedNode} />
