@@ -8,6 +8,7 @@ import "@react-sigma/core/lib/style.css";
 import { GraphSearch, GraphSearchOption } from "@react-sigma/graph-search";
 import "@react-sigma/graph-search/lib/style.css";
 import { CSSProperties, FC, useCallback, useState } from "react";
+import { NodeImageProgram } from "@sigma/node-image";
 
 import { FocusOnNode } from "./graph_utils/FocusOnNode";
 import { LayoutsControl } from "./graph_utils/LayoutControls";
@@ -52,6 +53,10 @@ export const GraphView: FC<GraphProps> = ({ style, className }) => {
   return (
     <SigmaContainer
     settings={{
+      defaultNodeType: "image",
+      nodeProgramClasses: {
+        image: NodeImageProgram,
+      },
       allowInvalidContainer: true,
       renderLabels: true,
       labelSize: 14,
