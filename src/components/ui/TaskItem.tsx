@@ -2,22 +2,25 @@ import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../card";
 import { Button } from "../button";
 import { Checkbox } from "../checkbox";
+import { Input } from "../input";
 
-export type Task = {
+type Task = {
   id: number;
   text: string;
   completed: boolean;
 };
 
-export function TaskCard() {
-  const [tasks, setTasks] = useState<Task[]>([
-    { id: 1, text: "First task", completed: false },
-  ]);
+interface TaskCardProps {
+  tasks: Task[];
+}
+
+export function TaskCard(props: TaskCardProps) {
+  const [tasks, setTasks] = useState<Task[]>(props.tasks);
 
   const addTask = () => {
     const newTask: Task = {
-      id: Date.now(),
-      text: `New Task ${tasks.length + 1}`,
+      id: tasks.length === 0 ? 0 : tasks[tasks.length - 1].id + 1,
+      text: "",
       completed: false,
     };
     setTasks([...tasks, newTask]);
@@ -27,6 +30,14 @@ export function TaskCard() {
     setTasks((prev) =>
       prev.map((task) =>
         task.id === id ? { ...task, completed: !task.completed } : task
+      )
+    );
+  };
+
+  const updateTaskText = (id: number, newText: string) => {
+    setTasks((prev) =>
+      prev.map((task) =>
+        task.id === id ? { ...task, text: newText } : task
       )
     );
   };
@@ -42,9 +53,10 @@ export function TaskCard() {
             key={task.id}
             task={task}
             onToggle={() => toggleTask(task.id)}
+            onTextChange={(newText) => updateTaskText(task.id, newText)}
           />
         ))}
-        <Button variant="outline" onClick={addTask}>
+        <Button variant="outline" onClick={() => addTask()}>
           + Add Task
         </Button>
       </CardContent>
@@ -55,9 +67,10 @@ export function TaskCard() {
 export type TaskItemProps = {
   task: Task;
   onToggle: () => void;
+  onTextChange: (newText: string) => void;
 };
 
-export function TaskItem({ task, onToggle }: TaskItemProps) {
+export function TaskItem({ task, onToggle, onTextChange }: TaskItemProps) {
   return (
     <Card className="w-full">
       <CardContent className="flex items-center gap-3 p-3">
@@ -66,13 +79,15 @@ export function TaskItem({ task, onToggle }: TaskItemProps) {
           onCheckedChange={onToggle}
           className="shrink-0"
         />
-        <span
-          className={`truncate ${
-            task.completed ? "line-through text-muted-foreground" : ""
-          }`}
-        >
-          {task.text}
-        </span>
+
+        <Input
+          value={task.text || ""}
+          onChange={(e) => onTextChange(e.target.value)}
+          readOnly={false}
+          placeholder="Enter your task here"
+          className="w-40"
+          style={{ outline: 'none', border: "none" }}
+        />
       </CardContent>
     </Card>
   );

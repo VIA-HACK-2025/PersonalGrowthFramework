@@ -27,7 +27,7 @@ export function LandingPage() {
           </Button>
 
           <NodeDialogCard />
-          <TaskCard />
+          <TaskCard tasks={[]} />
         </div>
       </div>
     </div>
