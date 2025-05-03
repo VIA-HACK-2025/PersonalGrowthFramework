@@ -4,18 +4,20 @@ import { Button } from "../button";
 import { Checkbox } from "../checkbox";
 import { Input } from "../input";
 
-type Task = {
+export type Task = {
   id: number;
   text: string;
   completed: boolean;
 };
 
-interface TaskCardProps {
+interface TaskCardProps extends React.HTMLAttributes<HTMLDivElement> {
   tasks: Task[];
+  setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
 }
 
-export function TaskCard(props: TaskCardProps) {
-  const [tasks, setTasks] = useState<Task[]>(props.tasks);
+
+export function TaskCard({ tasks: initialTasks, ...className }: TaskCardProps) {
+  const [tasks, setTasks] = useState<Task[]>(initialTasks);
 
   const addTask = () => {
     const newTask: Task = {
@@ -43,7 +45,7 @@ export function TaskCard(props: TaskCardProps) {
   };
 
   return (
-    <Card className="w-full max-w-md">
+    <Card className="w-full max-w-md" {...className}>
       <CardHeader>
         <CardTitle>My Tasks</CardTitle>
       </CardHeader>
@@ -56,7 +58,7 @@ export function TaskCard(props: TaskCardProps) {
             onTextChange={(newText) => updateTaskText(task.id, newText)}
           />
         ))}
-        <Button variant="outline" onClick={() => addTask()}>
+        <Button variant="outline" onClick={addTask}>
           + Add Task
         </Button>
       </CardContent>
@@ -81,12 +83,11 @@ export function TaskItem({ task, onToggle, onTextChange }: TaskItemProps) {
         />
 
         <Input
-          value={task.text || ""}
+          value={task.text}
           onChange={(e) => onTextChange(e.target.value)}
-          readOnly={false}
           placeholder="Enter your task here"
           className="w-40"
-          style={{ outline: 'none', border: "none" }}
+          style={{ outline: "none", border: "none" }}
         />
       </CardContent>
     </Card>

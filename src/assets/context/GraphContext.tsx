@@ -1,11 +1,13 @@
 import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
 
 interface GraphContextType {
-    selectedNode: string | null;
-    setSelectedNode: (node: string | null) => void;
-    addNode: () => void;
-    registerAddNode: (callback: () => void) => void;
-    isReady: boolean
+  selectedNode: string | null;
+  setSelectedNode: (node: string | null) => void;
+  addNode: () => void;
+  registerAddNode: (callback: () => void) => void;
+  isReady: boolean;
+  isLeafNode: boolean;
+  setIsLeafNode: (value: boolean) => void;
 }
 
 const GraphContext = createContext<GraphContextType | null>(null);
@@ -28,6 +30,7 @@ export const GraphProvider: React.FC<GraphProviderProps> = ({ children }) => {
     console.warn('addNode was called before it was registered');
   });
   const [isReady, setIsReady] = useState(false);
+  const [isLeafNode, setIsLeafNode] = useState(false);
 
   const registerAddNode = useCallback((callback: () => void) => {
     setAddNodeCallback(() => callback);
@@ -45,7 +48,9 @@ export const GraphProvider: React.FC<GraphProviderProps> = ({ children }) => {
         setSelectedNode,
         addNode,
         registerAddNode,
-        isReady
+        isReady,
+        isLeafNode,
+        setIsLeafNode
       }}
     >
       {children}

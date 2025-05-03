@@ -12,14 +12,17 @@ import { CSSProperties, FC, useCallback, useState } from "react";
 import { FocusOnNode } from "./graph_utils/FocusOnNode";
 import { LayoutsControl } from "./graph_utils/LayoutControls";
 import { Graph } from "./graph_utils/Graph";
+import { Task, TaskCard } from "../components/ui/TaskItem";
+import { useGraphContext } from "./context/GraphContext";
 
 interface GraphProps {
-  style?: CSSProperties,
-  className?: string
+  style?: CSSProperties;
+  className?: string;
 }
 
 export const GraphView: FC<GraphProps> = ({ style, className }) => {
-  const [selectedNode, setSelectedNode] = useState<string | null>(null);
+  const { isLeafNode, selectedNode } = useGraphContext();
+  const [tasks, setTasks] = useState<Task[]>([]);
   const [focusNode, setFocusNode] = useState<string | null>(null);
 
   const onFocus = useCallback((value: GraphSearchOption | null) => {
@@ -27,8 +30,7 @@ export const GraphView: FC<GraphProps> = ({ style, className }) => {
     else if (value.type === "nodes") setFocusNode(value.id);
   }, []);
   const onChange = useCallback((value: GraphSearchOption | null) => {
-    if (value === null) setSelectedNode(null);
-    else if (value.type === "nodes") setSelectedNode(value.id);
+    if (value === null) return;
   }, []);
   const postSearchResult = useCallback(
     (options: GraphSearchOption[]): GraphSearchOption[] => {
@@ -51,18 +53,21 @@ export const GraphView: FC<GraphProps> = ({ style, className }) => {
 
   return (
     <SigmaContainer
-    settings={{
-      allowInvalidContainer: true,
-      renderLabels: true,
-      labelSize: 14,
-      labelFont: "Arial",
-      labelWeight: "normal",
-      labelColor: { color: "#000" }
-    }}
+      settings={{
+        allowInvalidContainer: true,
+        renderLabels: true,
+        labelSize: 14,
+        labelFont: "Arial",
+        labelWeight: "normal",
+        labelColor: { color: "#000" }
+      }}
       style={style}
       className={className}
     >
       <Graph disableHoverEffect={false} />
+      {isLeafNode && selectedNode && (
+        <TaskCard tasks={tasks} setTasks={setTasks} className="fixed z-20 top-10 left-10 w-3/12" />
+      )}
       <FocusOnNode node={focusNode ?? selectedNode} />
       <ControlsContainer position={"bottom-right"}>
         <ZoomControl />
@@ -78,9 +83,7 @@ export const GraphView: FC<GraphProps> = ({ style, className }) => {
           postSearchResult={postSearchResult}
         />
       </ControlsContainer>
-
-      <ControlsContainer position={"bottom-left"}>
-      </ControlsContainer>
+      <ControlsContainer position={"bottom-left"}></ControlsContainer>
     </SigmaContainer>
   );
 };
